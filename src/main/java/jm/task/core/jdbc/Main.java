@@ -20,5 +20,7 @@ public class Main {
         UserService.cleanUsersTable();
         UserService.dropUsersTable();
 
+
+
     }
 }

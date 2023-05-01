@@ -9,7 +9,7 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
 
-    Connection connection = Util.getConnection();
+    private Connection connection = Util.getConnection();
 
 
     public UserDaoJDBCImpl() {
@@ -26,64 +26,33 @@ public class UserDaoJDBCImpl implements UserDao {
                 "  PRIMARY KEY (`id`)\n" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb3";
 
-        Statement statement = null;
+        try (Statement statement = connection.createStatement()) {
 
-        try {
-
-            statement = Util.getConnection().createStatement();
             statement.executeUpdate(sql);
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try { /// еще один блок try поймать исключения, дублирующий это надо ???
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e ) {
-                e.printStackTrace();
-            }
+
         }
     }
-
     public void dropUsersTable() {
 
         String sql = "DROP TABLE IF EXISTS USERS";
 
-        Statement statement = null;
+        try (Statement statement = connection.createStatement()) {
 
-        try {
-            statement = Util.getConnection().createStatement();
             statement.executeUpdate(sql);
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e ) {
-                e.printStackTrace();
-            }
         }
-
     }
 
     public void saveUser(String name, String lastName, byte age) {
 
-        PreparedStatement preparedStatement = null;
-
         String sql = "INSERT INTO USERS (NAME, LASTNAME, AGE) VALUES(?, ?, ?)";
 
-        try {
-            preparedStatement = Util.getConnection().prepareStatement(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
@@ -93,44 +62,20 @@ public class UserDaoJDBCImpl implements UserDao {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     public void removeUserById(long id) {
 
-        PreparedStatement preparedStatement = null;
-
         String sql = "DELETE FROM USERS WHERE ID = ?";
 
-        try {
-            preparedStatement = Util.getConnection().prepareStatement(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -140,11 +85,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
         String sql = "SELECT ID, NAME, LASTNAME, AGE FROM USERS";
 
-        Statement statement = null;
-
-        try {
-
-            statement = Util.getConnection().createStatement(); // это правильно ???
+        try (Statement statement = connection.createStatement()) {
 
             ResultSet resultSet = statement.executeQuery(sql);
 
@@ -159,17 +100,6 @@ public class UserDaoJDBCImpl implements UserDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e ) {
-                e.printStackTrace();
-            }
         }
         return userList;
     }
@@ -178,26 +108,12 @@ public class UserDaoJDBCImpl implements UserDao {
 
         String sql = "DELETE FROM USERS";
 
-        Statement statement = null;
+        try (Statement statement = connection.createStatement()) {
 
-        try {
-
-            statement = Util.getConnection().createStatement();
             statement.executeUpdate(sql);
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e ) {
-                e.printStackTrace();
-            }
         }
     }
 }

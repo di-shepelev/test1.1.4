@@ -12,6 +12,7 @@ public class Util {
     private static final String DB_PASS = "56329845";
 
     public static Connection getConnection() {
+
         Connection connection = null;
         try {
             Class.forName(DB_DRIVER);
@@ -19,6 +20,12 @@ public class Util {
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return connection;
     }
